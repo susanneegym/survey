@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Series 3 Training Feedback Survey</title>
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root { color-scheme: light; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #2c3e50;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    #root { width: 100%; }
+    .container { max-width: 700px; margin: 0 auto; }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+    .header {
+      margin-bottom: 2rem;
+      text-align: center;
+      border-bottom: 3px solid #3498db;
+      padding-bottom: 1.5rem;
+    }
+    .header h1 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 0.5rem; font-weight: 600; }
+    .header p { color: #7f8c8d; font-size: 0.95rem; }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #ecf0f1;
+      border-radius: 3px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3498db, #2980b9);
+      transition: width 0.3s ease;
+    }
+    .section-label { font-size: 0.85rem; color: #95a5a6; margin-bottom: 1rem; font-weight: 500; }
+    .question-group { margin-bottom: 1.8rem; }
+    .question-label {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+    }
+    .required { color: #e74c3c; }
+    .options { display: flex; flex-direction: column; gap: 0.6rem; }
+    .option {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem;
+      border: 2px solid #ecf0f1;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .option:hover { border-color: #3498db; background: #f8fafc; }
+    .option input { margin-right: 0.8rem; width: 18px; height: 18px; cursor: pointer; }
+    .option label { cursor: pointer; flex: 1; }
+    .rating { display: flex; gap: 0.5rem; }
+    .rating-btn {
+      width: 50px;
+      height: 50px;
+      border: 2px solid #bdc3c7;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+    .rating-btn:hover { border-color: #3498db; }
+    .rating-btn.active {
+      border-color: #3498db;
+      background: #ebf5fb;
+      color: #3498db;
+    }
+    textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #ecf0f1;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    .conditional-section {
+      background: #f8fafc;
+      padding: 1.2rem;
+      border-left: 4px solid #3498db;
+      border-radius: 6px;
+      margin-top: 1rem;
+    }
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 2px solid #ecf0f1;
+    }
+    .btn {
+      padding: 0.9rem 1.8rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary {
+      background: white;
+      border: 2px solid #bdc3c7;
+      color: #2c3e50;
+    }
+    .btn-secondary:hover { background: #f8f9fa; border-color: #95a5a6; }
+    .btn-primary {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      margin-left: auto;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3); }
+    .btn-primary:active { transform: translateY(0); }
+    .success-screen {
+      text-align: center;
+      padding: 2rem;
+    }
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    .success-screen h2 {
+      color: #27ae60;
+      margin-bottom: 0.5rem;
+      font-size: 1.6rem;
+    }
+    .success-screen p {
+      color: #7f8c8d;
+      margin-bottom: 1.5rem;
+    }
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ecf0f1;
+      border-top-color: #3498db;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    function Survey() {
+      const [answers, setAnswers] = useState({
+        department: '', training: '', information: [], softwareFeatures: [], technicalInnovations: [],
+        confidenceNo: '', confidenceNoText: '', differenceKnowledge: '', differenceKnowledgeText: '',
+        materialKnowledge: '', materialKnowledgeText: '', feedbackInformation: '',
+        trainingQuality: '', trainingQualityText: '', softwareFeaturesYes: [], technicalInnovationsYes: [],
+        confidenceYes: '', confidenceYesText: '', differenceKnowledgeYes: '', differenceKnowledgeYesText: '',
+        materialKnowledgeYes: '', materialKnowledgeYesText: '', trainingMissing: '', improvementSuggestions: '',
+      });
+
+      const [currentStep, setCurrentStep] = useState(1);
+      const [loading, setLoading] = useState(false);
+      const [submitted, setSubmitted] = useState(false);
+
+      const handleChange = (field, value) => setAnswers(prev => ({ ...prev, [field]: value }));
+      const handleArrayChange = (field, value) => {
+        setAnswers(prev => {
+          const arr = prev[field];
+          if (arr.includes(value)) {
+            return { ...prev, [field]: arr.filter(v => v !== value) };
+          } else {
+            return { ...prev, [field]: [...arr, value] };
+          }
+        });
+      };
+
+      const handleNext = () => {
+        if (currentStep === 1 && (!answers.department || !answers.training)) {
+          alert('Please answer both questions');
+          return;
+        }
+        if (currentStep === 1) {
+          setCurrentStep(answers.training === 'yes' ? 6 : 2);
+        } else if (currentStep === 2 && answers.information.length === 0) {
+          alert('Please select at least one option');
+          return;
+        } else if (currentStep === 3) {
+          if (answers.softwareFeatures.length === 0 || answers.technicalInnovations.length === 0) {
+            alert('Please answer all questions');
+            return;
+          }
+          setCurrentStep(4);
+        } else if (currentStep === 4) {
+          if (!answers.confidenceNo || !answers.differenceKnowledge) {
+            alert('Please answer all questions');
+            return;
+          }
+          setCurrentStep(5);
+        } else if (currentStep === 5) {
+          if (!answers.materialKnowledge) {
+            alert('Please answer all questions');
+            return;
+          }
+          handleSubmit();
+          return;
+        } else if (currentStep === 6) {
+          if (!answers.trainingQuality) {
+            alert('Please answer the question');
+            return;
+          }
+          setCurrentStep(7);
+        } else if (currentStep === 7) {
+          if (answers.softwareFeaturesYes.length === 0 || answers.technicalInnovationsYes.length === 0) {
+            alert('Please answer all questions');
+            return;
+          }
+          setCurrentStep(8);
+        } else if (currentStep === 8) {
+          if (!answers.confidenceYes || !answers.differenceKnowledgeYes) {
+            alert('Please answer all questions');
+            return;
+          }
+          setCurrentStep(9);
+        } else if (currentStep === 9) {
+          if (!answers.materialKnowledgeYes) {
+            alert('Please answer all questions');
+            return;
+          }
+          handleSubmit();
+          return;
+        } else {
+          setCurrentStep(Math.min(currentStep + 1, 9));
+        }
+      };
+
+      const handleBack = () => {
+        if (currentStep === 2 || currentStep === 6) setCurrentStep(1);
+        else if (currentStep > 1) setCurrentStep(currentStep - 1);
+      };
+
+      const handleSubmit = async () => {
+        setLoading(true);
+        try {
+          const scriptURL = 'https://script.google.com/macros/s/AKfycbyyGI-S8NpfkT6_7N8AChNHjAmIWmtX8palxWfxRZT_XQ7b_ABUpZd9UPj1xAx5uqi8ig/exec';
+          const response = await fetch(scriptURL, {
+            method: 'POST',
+            body: JSON.stringify(answers),
+            headers: { 'Content-Type': 'application/json' },
+          });
+
+          if (response.ok) {
+            setSubmitted(true);
+          } else {
+            alert('Error submitting form. Please try again.');
+          }
+        } catch (error) {
+          alert('Error: ' + error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const renderCheckboxes = (options, field) => (
+        <div className="options">
+          {options.map(option => (
+            <label key={option} className="option">
+              <input
+                type="checkbox"
+                checked={answers[field].includes(option)}
+                onChange={() => handleArrayChange(field, option)}
+              />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+      );
+
+      const renderRadios = (name, field, options) => (
+        <div className="options">
+          {options.map(option => (
+            <label key={option} className="option">
+              <input
+                type="radio"
+                name={name}
+                value={option}
+                checked={answers[field] === option}
+                onChange={() => handleChange(field, option)}
+              />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+      );
+
+      const renderRating = (field) => (
+        <div className="rating">
+          {[1, 2, 3, 4, 5].map(i => (
+            <button
+              key={i}
+              onClick={() => handleChange(field, i)}
+              className={`rating-btn ${answers[field] === i ? 'active' : ''}`}
+            >
+              {i}
+            </button>
+          ))}
+        </div>
+      );
+
+      if (submitted) {
+        return (
+          <div className="container">
+            <div className="card success-screen">
+              <div className="success-icon">✓</div>
+              <h2>Thank you!</h2>
+              <p>Your feedback has been submitted successfully. We appreciate your input on the Series 3 training.</p>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="container">
+          <div className="card">
+            <div className="header">
+              <h1>Series 3 Introduction</h1>
+              <p>Please provide your honest feedback regarding the Series 3 Sales Training session to help us improve our future workshops for product changes. (It is just about Series 3, not the New Commercial Model NCM!)</p>
+            </div>
+
+            <div className="progress-bar">
+              <div className="progress-fill" style={{width: `${(currentStep / 9) * 100}%`}}></div>
+            </div>
+
+            <div className="section-label">Section {currentStep === 1 ? 1 : currentStep <= 5 ? currentStep : currentStep - 3} of {currentStep <= 5 ? 5 : 4}</div>
+
+            {currentStep === 1 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">Which department do you work in? <span className="required">*</span></div>
+                  {renderRadios('dept', 'department', ['Sales (incl. SEM and Inside)', 'CSM/CTM'])}
+                </div>
+                <div className="question-group">
+                  <div className="question-label">Did you attend the Go-to-Market training in Munich in February? <span className="required">*</span></div>
+                  {renderRadios('training', 'training', ['yes', 'no'])}
+                </div>
+              </div>
+            )}
+
+            {currentStep === 2 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">How did you get the information about Series 3? <span className="required">*</span></div>
+                  {renderCheckboxes(['Notion', 'Colleague in my team', 'Country director', 'Training session slides', 'Other'], 'information')}
+                </div>
+              </div>
+            )}
+
+            {currentStep === 3 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">Which software features of Series 3 are you aware of? <span className="required">*</span></div>
+                  {renderCheckboxes(['Genius Training Plan Integration', 'Trainer App Integration', 'Longevity Training Program', 'Max Out Training Method', 'BioAge Updates', 'None of these'], 'softwareFeatures')}
+                </div>
+                <div className="question-group">
+                  <div className="question-label">Which technical innovations of Series 3 are you aware of? <span className="required">*</span></div>
+                  {renderCheckboxes(['NFC/RFID integration in the screen', 'Larger display (18.5")', 'New color "Pirate Black"', 'Ergonomic improvements (seats, handles, movement geometry)', 'LED ambient lighting', 'Larger footplatform', 'None of these'], 'technicalInnovations')}
+                </div>
+              </div>
+            )}
+
+            {currentStep === 4 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">How confident do you feel in explaining Series 3 benefits to a customer? <span className="required">*</span></div>
+                  {renderRating('confidenceNo')}
+                </div>
+                {answers.confidenceNo && answers.confidenceNo <= 3 && (
+                  <div className="conditional-section">
+                    <div className="question-label">What would have helped you feel more confident?</div>
+                    <textarea value={answers.confidenceNoText} onChange={(e) => handleChange('confidenceNoText', e.target.value)} rows="3" placeholder="Your answer..." />
+                  </div>
+                )}
+                <div className="question-group">
+                  <div className="question-label">Do you know the key differences between Vision and Series 3? <span className="required">*</span></div>
+                  {renderRadios('diff', 'differenceKnowledge', ['yes', 'no'])}
+                </div>
+                {answers.differenceKnowledge === 'no' && (
+                  <div className="conditional-section">
+                    <div className="question-label">What information is missing?</div>
+                    <textarea value={answers.differenceKnowledgeText} onChange={(e) => handleChange('differenceKnowledgeText', e.target.value)} rows="3" placeholder="Your answer..." />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 5 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">Do you know where to find all information material about Series 3? <span className="required">*</span></div>
+                  {renderRadios('material', 'materialKnowledge', ['yes', 'no'])}
+                </div>
+                {answers.materialKnowledge === 'no' && (
+                  <div className="conditional-section">
+                    <div className="question-label">Which information material are you missing?</div>
+                    <textarea value={answers.materialKnowledgeText} onChange={(e) => handleChange('materialKnowledgeText', e.target.value)} rows="3" placeholder="Your answer..." />
+                  </div>
+                )}
+                <div className="question-group">
+                  <div className="question-label">Any other feedback on the information transfer?</div>
+                  <textarea value={answers.feedbackInformation} onChange={(e) => handleChange('feedbackInformation', e.target.value)} rows="3" placeholder="Your answer..." />
+                </div>
+              </div>
+            )}
+
+            {currentStep === 6 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">How would you rate the overall quality of the Series 3 training? <span className="required">*</span></div>
+                  {renderRating('trainingQuality')}
+                </div>
+                {answers.trainingQuality && answers.trainingQuality <= 3 && (
+                  <div className="conditional-section">
+                    <div className="question-label">What was missing for a 5 stars rating?</div>
+                    <textarea value={answers.trainingQualityText} onChange={(e) => handleChange('trainingQualityText', e.target.value)} rows="3" placeholder="Your answer..." />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 7 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">Which software features of Series 3 are you aware of? <span className="required">*</span></div>
+                  {renderCheckboxes(['Genius Training Plan Integration', 'Trainer App Integration', 'Longevity Training Program', 'Max Out Training Method', 'BioAge Updates', 'None of these'], 'softwareFeaturesYes')}
+                </div>
+                <div className="question-group">
+                  <div className="question-label">Which technical innovations of Series 3 are you aware of? <span className="required">*</span></div>
+                  {renderCheckboxes(['NFC/RFID integration in the screen', 'Larger display (18.5")', 'New color "Pirate Black"', 'Ergonomic improvements (seats, handles, movement geometry)', 'LED ambient lighting', 'Larger footplatform', 'None of these'], 'technicalInnovationsYes')}
+                </div>
+              </div>
+            )}
+
+            {currentStep === 8 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">How confident do you feel in explaining Series 3 benefits after the training? <span className="required">*</span></div>
+                  {renderRating('confidenceYes')}
+                </div>
+                {answers.confidenceYes && answers.confidenceYes <= 3 && (
+                  <div className="conditional-section">
+                    <div className="question-label">What would have helped you feel more confident?</div>
+                    <textarea value={answers.confidenceYesText} onChange={(e) => handleChange('confidenceYesText', e.target.value)} rows="3" placeholder="Your answer..." />
+                  </div>
+                )}
+                <div className="question-group">
+                  <div className="question-label">Do you know the key differences between Vision and Series 3 after training? <span className="required">*</span></div>
+                  {renderRadios('diffYes', 'differenceKnowledgeYes', ['yes', 'no'])}
+                </div>
+                {answers.differenceKnowledgeYes === 'no' && (
+                  <div className="conditional-section">
+                    <div className="question-label">What information is missing?</div>
+                    <textarea value={answers.differenceKnowledgeYesText} onChange={(e) => handleChange('differenceKnowledgeYesText', e.target.value)} rows="3" placeholder="Your answer..." />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 9 && (
+              <div>
+                <div className="question-group">
+                  <div className="question-label">Do you know where to find all information material about Series 3? <span className="required">*</span></div>
+                  {renderRadios('materialYes', 'materialKnowledgeYes', ['yes', 'no'])}
+                </div>
+                {answers.materialKnowledgeYes === 'no' && (
+                  <div className="conditional-section">
+                    <div className="question-label">Which information material are you missing?</div>
+                    <textarea value={answers.materialKnowledgeYesText} onChange={(e) => handleChange('materialKnowledgeYesText', e.target.value)} rows="3" placeholder="Your answer..." />
+                  </div>
+                )}
+                <div className="question-group">
+                  <div className="question-label">Was something missing at the training that you needed?</div>
+                  <textarea value={answers.trainingMissing} onChange={(e) => handleChange('trainingMissing', e.target.value)} rows="3" placeholder="Your answer..." />
+                </div>
+                <div className="question-group">
+                  <div className="question-label">Suggestions for improving future trainings? <span className="required">*</span></div>
+                  <textarea value={answers.improvementSuggestions} onChange={(e) => handleChange('improvementSuggestions', e.target.value)} rows="3" placeholder="Your answer..." />
+                </div>
+              </div>
+            )}
+
+            <div className="button-group">
+              {currentStep > 1 && <button className="btn btn-secondary" onClick={handleBack}>← Back</button>}
+              <button
+                className="btn btn-primary"
+                onClick={handleNext}
+                disabled={loading}
+              >
+                {loading ? <span className="loading"></span> : currentStep === 9 || currentStep === 5 ? 'Submit' : 'Next →'}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Survey />);
+  </script>
+</body>
+</html>
